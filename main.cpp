@@ -9,7 +9,7 @@
 
 using namespace std;
 
-constexpr int SIZE = 5000;
+constexpr int SIZE = 1000;
 constexpr int width  = SIZE;
 constexpr int height = SIZE;
 const TGAColor white = {255, 255, 255, 255};
@@ -74,6 +74,8 @@ void drawEdge(const Model &model, TGAImage &imageFace){
     {
         TGAColor color = TGAColor(rand()%255,rand()%255,rand()%255,255);
 
+
+
         array<double, 3> v0 = model.vertex(model.face(i)[0]);
         array<double, 3> v1 = model.vertex(model.face(i)[1]);
         array<double, 3> v2 = model.vertex(model.face(i)[2]);
@@ -81,7 +83,7 @@ void drawEdge(const Model &model, TGAImage &imageFace){
         Vertex v0_trans = {(int)((v0[0] + 1) * width/2),(int)((v0[1] + 1) * height/2),(int)((v0[2] + 1) * width/2)};
         Vertex v1_trans = {(int)((v1[0] + 1) * width/2),(int)((v1[1] + 1) * height/2),(int)((v1[2] + 1) * width/2)};
         Vertex v2_trans = {(int)((v2[0] + 1) * width/2),(int)((v2[1] + 1) * height/2),(int)((v2[2] + 1) * width/2)};
-
+        
         //face
         triangle(v0_trans,v1_trans,v2_trans,imageFace,color);
 /*
