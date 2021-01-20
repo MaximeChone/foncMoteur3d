@@ -9,7 +9,7 @@
 
 using namespace std;
 
-constexpr int SIZE = 1000;
+constexpr int SIZE = 5000;
 constexpr int width  = SIZE;
 constexpr int height = SIZE;
 const TGAColor white = {255, 255, 255, 255};
@@ -68,62 +68,62 @@ vector<array<double,3>> readVFromFile(const string fileName){
     return liste;
 }
 
-void drawV(const Model &model, TGAImage &image){
 
-    for (int i = 0; i < model.nvertices();i++) // access by reference to avoid copying
-    {
-        line((int)((model.vertex(i)[0] + 1) * width/2), (int)((model.vertex(i)[1] + 1) * height/2),(int)((model.vertex(i)[0] + 1) * width/2 + 1), (int)((model.vertex(i)[1] + 1) * height/2 + 1),image,green);
-    }
-
-
-}
-
-void drawEdge(const Model &model, TGAImage &imageFace,TGAImage &imageProfil,TGAImage &imageDessus){
+void drawEdge(const Model &model, TGAImage &imageFace){
     for (int i = 0; i < model.nfaces();i++) // access by reference to avoid copying
     {
-        int v1 = model.face(i)[0];
-        int v2 = model.face(i)[1];
-        int v3 = model.face(i)[2];
+        TGAColor color = TGAColor(rand()%255,rand()%255,rand()%255,255);
+
+        array<double, 3> v0 = model.vertex(model.face(i)[0]);
+        array<double, 3> v1 = model.vertex(model.face(i)[1]);
+        array<double, 3> v2 = model.vertex(model.face(i)[2]);
+
+        Vertex v0_trans = {(int)((v0[0] + 1) * width/2),(int)((v0[1] + 1) * height/2),(int)((v0[2] + 1) * width/2)};
+        Vertex v1_trans = {(int)((v1[0] + 1) * width/2),(int)((v1[1] + 1) * height/2),(int)((v1[2] + 1) * width/2)};
+        Vertex v2_trans = {(int)((v2[0] + 1) * width/2),(int)((v2[1] + 1) * height/2),(int)((v2[2] + 1) * width/2)};
 
         //face
-
-        line((int)((model.vertex(v1)[0] + 1) * width/2), (int)((model.vertex(v1)[1] + 1) * height/2),(int)((model.vertex(v2)[0] + 1) * width/2), (int)((model.vertex(v2)[1] + 1) * height/2),imageFace,green);
-        line((int)((model.vertex(v1)[0] + 1) * width/2), (int)((model.vertex(v1)[1] + 1) * height/2),(int)((model.vertex(v3)[0] + 1) * width/2), (int)((model.vertex(v3)[1] + 1) * height/2),imageFace,green);
-        line((int)((model.vertex(v2)[0] + 1) * width/2), (int)((model.vertex(v2)[1] + 1) * height/2),(int)((model.vertex(v3)[0] + 1) * width/2), (int)((model.vertex(v3)[1] + 1) * height/2),imageFace,green);
-
-
+        triangle(v0_trans,v1_trans,v2_trans,imageFace,color);
+/*
         //profil
 
-        line((int)((model.vertex(v1)[2] + 1) * width/2), (int)((model.vertex(v1)[1] + 1) * height/2),(int)((model.vertex(v2)[2] + 1) * width/2), (int)((model.vertex(v2)[1] + 1) * height/2),imageProfil,green);
-        line((int)((model.vertex(v1)[2] + 1) * width/2), (int)((model.vertex(v1)[1] + 1) * height/2),(int)((model.vertex(v3)[2] + 1) * width/2), (int)((model.vertex(v3)[1] + 1) * height/2),imageProfil,green);
-        line((int)((model.vertex(v2)[2] + 1) * width/2), (int)((model.vertex(v2)[1] + 1) * height/2),(int)((model.vertex(v3)[2] + 1) * width/2), (int)((model.vertex(v3)[1] + 1) * height/2),imageProfil,green);
+        line((int)((model.vertex(v1)[2] + 1) * width/2), (int)((model.vertex(v1)[1] + 1) * height/2),(int)((model.vertex(v2)[2] + 1) * width/2), (int)((model.vertex(v2)[1] + 1) * height/2),imageProfil,color);
+        line((int)((model.vertex(v1)[2] + 1) * width/2), (int)((model.vertex(v1)[1] + 1) * height/2),(int)((model.vertex(v3)[2] + 1) * width/2), (int)((model.vertex(v3)[1] + 1) * height/2),imageProfil,color);
+        line((int)((model.vertex(v2)[2] + 1) * width/2), (int)((model.vertex(v2)[1] + 1) * height/2),(int)((model.vertex(v3)[2] + 1) * width/2), (int)((model.vertex(v3)[1] + 1) * height/2),imageProfil,color);
 
         //dessus
 
-        line((int)((model.vertex(v1)[2] + 1) * width/2), (int)((model.vertex(v1)[0] + 1) * height/2),(int)((model.vertex(v2)[2] + 1) * width/2), (int)((model.vertex(v2)[0] + 1) * height/2),imageDessus,green);
-        line((int)((model.vertex(v1)[2] + 1) * width/2), (int)((model.vertex(v1)[0] + 1) * height/2),(int)((model.vertex(v3)[2] + 1) * width/2), (int)((model.vertex(v3)[0] + 1) * height/2),imageDessus,green);
-        line((int)((model.vertex(v2)[2] + 1) * width/2), (int)((model.vertex(v2)[0] + 1) * height/2),(int)((model.vertex(v3)[2] + 1) * width/2), (int)((model.vertex(v3)[0] + 1) * height/2),imageDessus,green);
-
+        line((int)((model.vertex(v1)[2] + 1) * width/2), (int)((model.vertex(v1)[0] + 1) * height/2),(int)((model.vertex(v2)[2] + 1) * width/2), (int)((model.vertex(v2)[0] + 1) * height/2),imageDessus,color);
+        line((int)((model.vertex(v1)[2] + 1) * width/2), (int)((model.vertex(v1)[0] + 1) * height/2),(int)((model.vertex(v3)[2] + 1) * width/2), (int)((model.vertex(v3)[0] + 1) * height/2),imageDessus,color);
+        line((int)((model.vertex(v2)[2] + 1) * width/2), (int)((model.vertex(v2)[0] + 1) * height/2),(int)((model.vertex(v3)[2] + 1) * width/2), (int)((model.vertex(v3)[0] + 1) * height/2),imageDessus,color);
+*/
 
      }
 }
 
 
 int main(){
+
+
     TGAImage imageFace(width, height, TGAImage::RGB);
-    TGAImage imageProfil(width, height, TGAImage::RGB);
-    TGAImage imageDessus(width, height, TGAImage::RGB);
 
     //line(50,50,51,51,image,red);
 
     Model model("obj/african_head/african_head.obj");
 
     //drawV(model,image);
-    drawEdge(model,imageFace,imageProfil,imageDessus);
+    drawEdge(model,imageFace);
     imageFace.write_tga_file("face.tga");
-    imageProfil.write_tga_file("profil.tga");
-    imageDessus.write_tga_file("dessus.tga");
 
+/*
+    TGAImage image(200,200,TGAImage::RGB);
+
+    triangle({10,150,20},{60,150,20},{50,22,20},image,green);
+    triangle({180,100,20},{140,110,20},{200,200,20},image,blue);
+    triangle({120,10,20},{80,190,20},{140,60,20},image,red);
+
+    image.write_tga_file("image.tga");
+*/
 
     return 0;
 }
