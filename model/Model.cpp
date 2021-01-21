@@ -2,10 +2,7 @@
 // Created by Maxime Choné on 13/01/2021.
 //
 
-#include <fstream>
-#include <array>
-#include <sstream>
-#include <iostream>
+
 #include "Model.h"
 
 
@@ -58,7 +55,7 @@ int Model::nvertices() const {
     return vertices.size();
 }
 
-array<double, 3> Model::vertex(const int i) const {
+vector3d Model::vertex(const int i) const {
     return vertices[i];
 }
 

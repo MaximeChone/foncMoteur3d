@@ -6,6 +6,7 @@
 #include <fstream>
 #include <list>
 #include <array>
+#include "render/renderer.h"
 
 using namespace std;
 
@@ -76,16 +77,17 @@ void drawEdge(const Model &model, TGAImage &imageFace){
 
 
 
-        array<double, 3> v0 = model.vertex(model.face(i)[0]);
-        array<double, 3> v1 = model.vertex(model.face(i)[1]);
-        array<double, 3> v2 = model.vertex(model.face(i)[2]);
+        vector3d v0 = model.vertex(model.face(i)[0]);
+        vector3d v1 = model.vertex(model.face(i)[1]);
+        vector3d v2 = model.vertex(model.face(i)[2]);
 
-        Vertex v0_trans = {(int)((v0[0] + 1) * width/2),(int)((v0[1] + 1) * height/2),(int)((v0[2] + 1) * width/2)};
-        Vertex v1_trans = {(int)((v1[0] + 1) * width/2),(int)((v1[1] + 1) * height/2),(int)((v1[2] + 1) * width/2)};
-        Vertex v2_trans = {(int)((v2[0] + 1) * width/2),(int)((v2[1] + 1) * height/2),(int)((v2[2] + 1) * width/2)};
-        
+        vector2i v0_trans = {(int)((v0.x + 1) * width / 2), (int)((v0.y + 1) * height / 2)};
+        vector2i v1_trans = {(int)((v1.x + 1) * width / 2), (int)((v1.y + 1) * height / 2)};
+        vector2i v2_trans = {(int)((v2.x + 1) * width / 2), (int)((v2.y + 1) * height / 2)};
+
+        vector2i points[3] = {v0_trans,v1_trans,v2_trans};
         //face
-        triangle(v0_trans,v1_trans,v2_trans,imageFace,color);
+        triangle(points, imageFace, color);
 /*
         //profil
 
@@ -114,15 +116,19 @@ int main(){
     Model model("obj/african_head/african_head.obj");
 
     //drawV(model,image);
-    drawEdge(model,imageFace);
+    flatShading(model,imageFace);
     imageFace.write_tga_file("face.tga");
+
 
 /*
     TGAImage image(200,200,TGAImage::RGB);
 
-    triangle({10,150,20},{60,150,20},{50,22,20},image,green);
-    triangle({180,100,20},{140,110,20},{200,200,20},image,blue);
-    triangle({120,10,20},{80,190,20},{140,60,20},image,red);
+    vector2i points[3] = {{10,150},{60,150},{50,22}};
+    triangle(points,image,green);
+    vector2i points1[3] = {{180,100},{140,110},{200,200}};
+    triangle(points1,image,blue);
+    vector2i points2[3] = {{120,10},{80,190},{140,60}};
+    triangle(points2,image,red);
 
     image.write_tga_file("image.tga");
 */
