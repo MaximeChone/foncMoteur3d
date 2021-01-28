@@ -77,17 +77,17 @@ void drawEdge(const Model &model, TGAImage &imageFace){
 
 
 
-        vector3d v0 = model.vertex(model.face(i)[0]);
-        vector3d v1 = model.vertex(model.face(i)[1]);
-        vector3d v2 = model.vertex(model.face(i)[2]);
+        vector3d v0 = model.vertex(model.getVerticesFace(i)[0]);
+        vector3d v1 = model.vertex(model.getVerticesFace(i)[1]);
+        vector3d v2 = model.vertex(model.getVerticesFace(i)[2]);
 
         vector2i v0_trans = {(int)((v0.x + 1) * width / 2), (int)((v0.y + 1) * height / 2)};
         vector2i v1_trans = {(int)((v1.x + 1) * width / 2), (int)((v1.y + 1) * height / 2)};
         vector2i v2_trans = {(int)((v2.x + 1) * width / 2), (int)((v2.y + 1) * height / 2)};
 
         vector2i points[3] = {v0_trans,v1_trans,v2_trans};
-        //face
-        triangle(points, imageFace, color);
+        //getVerticesFace
+        //triangle(points, imageFace, color);
 /*
         //profil
 
@@ -110,28 +110,28 @@ int main(){
 
 
     TGAImage imageFace(width, height, TGAImage::RGB);
+    TGAImage texture(1024,1024,TGAImage::RGB);
 
+    texture.read_tga_file("obj/african_head/african_head_diffuse.tga");
     //line(50,50,51,51,image,red);
 
     Model model("obj/african_head/african_head.obj");
 
     //drawV(model,image);
     flatShading(model,imageFace);
-    imageFace.write_tga_file("face.tga");
-
+    imageFace.write_tga_file("getVerticesFace.tga");
 
 /*
-    TGAImage image(200,200,TGAImage::RGB);
+    TGAImage render(width, 1, TGAImage::RGB);
+    int ybuffer[width];
+    for (int i=0; i<width; i++) {
+        ybuffer[i] = std::numeric_limits<int>::min();
+    }
+    rasterize(vector2i(20, 34),   vector2i(744, 400), render, red,   ybuffer);
+    rasterize(vector2i(120, 434), vector2i(444, 400), render, green, ybuffer);
+    rasterize(vector2i(330, 463), vector2i(594, 200), render, blue,  ybuffer);
 
-    vector2i points[3] = {{10,150},{60,150},{50,22}};
-    triangle(points,image,green);
-    vector2i points1[3] = {{180,100},{140,110},{200,200}};
-    triangle(points1,image,blue);
-    vector2i points2[3] = {{120,10},{80,190},{140,60}};
-    triangle(points2,image,red);
-
-    image.write_tga_file("image.tga");
+    render.write_tga_file("render.tga");
 */
-
     return 0;
 }

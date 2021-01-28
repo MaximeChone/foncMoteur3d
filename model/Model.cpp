@@ -16,10 +16,10 @@ Model::Model(const std::string filename) {
     if (myfile.is_open()){
 
         while (!myfile.eof()) {
-            getline(myfile,line);
+            getline(myfile, line);
             std::istringstream lineParser(line);
 
-            if(!line.compare(0,2,"v ")){
+            if (!line.compare(0, 2, "v ")) {
                 double x;
                 double y;
                 double z;
@@ -29,22 +29,35 @@ Model::Model(const std::string filename) {
                 lineParser >> y;
                 lineParser >> z;
 
-                vertices.push_back({x,y,z});
-            } else if(!line.compare(0,2,"f ")) {
-                int temp1;//à remplacer plus tard pour récupérer l'info
+                vertices.push_back({x, y, z});
+            } else if (!(line.compare(0, 3, "vt "))) {
+                double u;
+                double v;
+
+                lineParser >> temp;
+                lineParser >> u;
+                lineParser >> v;
+
+                textureVertices.push_back({u, v});
+
+            } else if (!line.compare(0, 2, "f ")) {
+                int vt1,vt2,vt3;//à remplacer plus tard pour récupérer l'info
+                int vn1,vn2,vn3;
                 int v1, v2, v3;
                 lineParser >> temp;
 
-                lineParser >> v1 >> temp >> temp1 >> temp >> temp1;
+                lineParser >> v1 >> temp >> vt1 >> temp >> vn1;
 
-                lineParser >> v2 >> temp >> temp1 >> temp >> temp1;
+                lineParser >> v2 >> temp >> vt2 >> temp >> vn2;
 
-                lineParser >> v3 >> temp >> temp1 >> temp >> temp1;
+                lineParser >> v3 >> temp >> vt3 >> temp >> vn3;
 
-                faces.push_back({v1 - 1, v2 - 1, v3 - 1});
+                facesTextureVertices.push_back({vt1 - 1,vt2 - 1,vt3 -1});
+                facesVertices.push_back({v1 - 1, v2 - 1, v3 - 1});
 
             }
         }
+
 
         myfile.close();
 
@@ -59,12 +72,20 @@ vector3d Model::vertex(const int i) const {
     return vertices[i];
 }
 
-array<int, 3> Model::face(const int i) const {
-    return faces[i];
+array<int, 3> Model::getVerticesFace(const int i) const {
+    return facesVertices[i];
 }
 
 int Model::nfaces() const {
-    return faces.size();
+    return facesVertices.size();
+}
+
+vector2d Model::getTextureVertices(const int i) const {
+    return textureVertices[i];
+}
+
+array<int, 3> Model::getTextureVerticesFace(const int i) const {
+    return facesTextureVertices[i];
 }
 
 

@@ -19,7 +19,23 @@ struct vector2i{
     }
 };
 
+struct vector2d{
+    vector2d() {
+
+    }
+    double x;
+    double y;
+    vector2d(double x, double y){
+        this->x = x;
+        this->y = y;
+    }
+};
+
 struct vector3d{
+    vector3d() {
+
+    }
+
     double x;
     double y;
     double z;

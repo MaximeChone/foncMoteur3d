@@ -18,11 +18,13 @@ double dotProduct(const vector3d &v0, const vector3d &v1){
 }
 
 void vector3d::normalize() {
-    this->x = this->x/norm();
-    this->y = this->y/norm();
-    this->z = this->z/norm();
+    double n = norm();
+    x = x/n;
+    y = y/n;
+    z = z/n;
 }
 
 double vector3d::norm() {
     return sqrt(x * x + y * y + z * z);
 }
+
