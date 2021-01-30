@@ -60,7 +60,7 @@ vector3d barycentric(vector3d *points,vector3d p){
     return {1 - (u.x + u.y)/u.z, u.y/u.z, u.x/u.z};
 }
 
-void triangle(vector3d *points, TGAImage &image, TGAColor color, double zbuffer[]){
+void triangle(vector3d *points, vector2d *pointsTexture,TGAImage &image, TGAImage &texture, double zbuffer[],float intensity){
     vector2d bboxmin(image.get_width()-1, image.get_height()-1);
     vector2d bboxmax(0,0);
     vector2d clamp(image.get_width()-1, image.get_height()-1);
@@ -91,6 +91,19 @@ void triangle(vector3d *points, TGAImage &image, TGAColor color, double zbuffer[
                 p.z += points[0].z * barycenter.x;
                 p.z += points[1].z * barycenter.y;
                 p.z += points[2].z * barycenter.z;
+
+                //calcul color
+                double u = (barycenter.x * pointsTexture[0].x
+                        + barycenter.y * pointsTexture[1].x
+                        + barycenter.z * pointsTexture[2].x);
+
+                double v = (barycenter.x * pointsTexture[0].y
+                              + barycenter.y * pointsTexture[1].y
+                              + barycenter.z * pointsTexture[2].y);
+
+
+                TGAColor color = texture.get(u * texture.get_width(),v * texture.get_height()) * intensity;
+
 
                 if(zbuffer[i + j * image.get_width()] < p.z){
                     image.set(p.x,p.y,color);

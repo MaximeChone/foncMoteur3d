@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 #include "Vectors.h"
+#include "../lib/tgaimage.h"
 
 using namespace std;
 
@@ -22,14 +23,19 @@ private:
     vector<vector2d> textureVertices;
     vector<array<int,3>> facesTextureVertices;
 
+
 public:
-    Model(const std::string filename);
+    Model(const std::string filename,const std::string textureFileName);
     int nvertices() const;
+    void setImage(TGAImage image);
     int nfaces() const;
     vector3d vertex(const int i) const;
     array<int,3> getVerticesFace(const int i) const;
     vector2d getTextureVertices(const int i) const;
     array<int,3> getTextureVerticesFace(const int i) const;
+    void saveImage(string name);
+    TGAImage image;
+    TGAImage texture;
 };
 
 

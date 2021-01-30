@@ -109,17 +109,27 @@ void drawEdge(const Model &model, TGAImage &imageFace){
 int main(){
 
 
-    TGAImage imageFace(width, height, TGAImage::RGB);
-    TGAImage texture(1024,1024,TGAImage::RGB);
 
-    texture.read_tga_file("obj/african_head/african_head_diffuse.tga");
     //line(50,50,51,51,image,red);
 
-    Model model("obj/african_head/african_head.obj");
-
+    Model african("obj/african_head/african_head.obj","obj/african_head/african_head_diffuse.tga");
+/*
     //drawV(model,image);
-    flatShading(model,imageFace);
-    imageFace.write_tga_file("getVerticesFace.tga");
+    //flatShading(model,imageFace);
+    texture(african);
+    african.image.write_tga_file("african.tga");
+
+    Model diablo("obj/diablo3_pose/diablo3_pose.obj","obj/diablo3_pose/diablo3_pose_diffuse.tga");
+    texture(diablo);
+    diablo.image.write_tga_file("diablo.tga");
+*/
+
+    Model boggie("obj/boggie/head.obj","obj/boggie/head_diffuse.tga");
+    Model body("obj/boggie/body.obj","obj/boggie/body_diffuse.tga");
+    texture(body);
+    boggie.setImage(body.image);
+    texture(boggie);
+    boggie.image.write_tga_file("boggie.tga");
 
 /*
     TGAImage render(width, 1, TGAImage::RGB);

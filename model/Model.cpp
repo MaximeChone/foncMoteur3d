@@ -6,7 +6,13 @@
 #include "Model.h"
 
 
-Model::Model(const std::string filename) {
+Model::Model(const std::string filename,const std::string textureFileName) {
+
+    image = TGAImage(1000,1000,TGAImage::RGB);
+    //texture =  TGAImage(1024,1024,TGAImage::RGB);
+    texture.read_tga_file(textureFileName);
+    texture.flip_vertically();
+
     ifstream myfile (filename);
     string line;
     char temp;
@@ -34,7 +40,7 @@ Model::Model(const std::string filename) {
                 double u;
                 double v;
 
-                lineParser >> temp;
+                lineParser >> temp >> temp;
                 lineParser >> u;
                 lineParser >> v;
 
@@ -86,6 +92,10 @@ vector2d Model::getTextureVertices(const int i) const {
 
 array<int, 3> Model::getTextureVerticesFace(const int i) const {
     return facesTextureVertices[i];
+}
+
+void Model::setImage(TGAImage image) {
+    this->image = image;
 }
 
 

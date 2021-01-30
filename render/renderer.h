@@ -12,7 +12,7 @@
 const static vector3d light = {0,0,1};
 
 
-void flatShading(const Model &model, TGAImage &image);
-void texture(const Model &model, TGAImage &image,TGAImage &texture);
+void flatShading( Model &model, TGAImage &image);
+void texture( Model &model);
 
 #endif //FONCMO3D_RENDERER_H
