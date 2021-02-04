@@ -3,7 +3,6 @@
 //
 
 #include "../lib/tgaimage.h"
-#include "../model/Vectors.h"
 #include "../model/Model.h"
 
 using namespace std;

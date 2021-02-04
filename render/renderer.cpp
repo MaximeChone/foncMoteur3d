@@ -58,6 +58,9 @@ void flatShading(const Model &model, TGAImage &image){
 void texture( Model &model){
     double zbuffer[model.image.get_height() * model.image.get_width()];
 
+    Matrix proj = Matrix::identity(4);
+    proj[3][2] = -1.0/camera.z;
+
     for(int i = 0 ; i < model.image.get_height() * model.image.get_width();i++){
         zbuffer[i] = std::numeric_limits<int>::min();
     }
@@ -67,8 +70,11 @@ void texture( Model &model){
 
         //on récupère les sommets de la getVerticesFace i
         vector3d v0 = model.vertex(model.getVerticesFace(i)[0]);
+        v0 = projection(v0,proj);
         vector3d v1 = model.vertex(model.getVerticesFace(i)[1]);
+        v1 = projection(v1,proj);
         vector3d v2 = model.vertex(model.getVerticesFace(i)[2]);
+        v2 = projection(v2,proj);
 
         //on récupère les vt du triangle
         vector2d v0Tex = model.getTextureVertices(model.getTextureVerticesFace(i)[0]);
@@ -109,5 +115,11 @@ void texture( Model &model){
             triangle(points, pointsTex,model.image,model.texture,zbuffer,intensity);
         }
     }
+}
+
+vector3d projection( vector3d vec, Matrix m){
+
+    return m2v((m * v2m(vec)));
+
 }
 
