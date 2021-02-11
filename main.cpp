@@ -116,7 +116,7 @@ int main(){
 
     //drawV(model,image);
     //flatShading(model,imageFace);
-    texture(african);
+    render(african);
     african.image.write_tga_file("african.tga");
 /*
     Model diablo("obj/diablo3_pose/diablo3_pose.obj","obj/diablo3_pose/diablo3_pose_diffuse.tga");
@@ -128,7 +128,7 @@ int main(){
     Model body("obj/boggie/body.obj","obj/boggie/body_diffuse.tga");
     texture(body);
     boggie.setImage(body.image);
-    texture(boggie);
+    render(boggie);
     boggie.image.write_tga_file("boggie.tga");
 
 

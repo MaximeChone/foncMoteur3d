@@ -55,7 +55,35 @@ void flatShading(const Model &model, TGAImage &image){
     }
 }
 */
-void texture( Model &model){
+
+Matrix lookat(vector3d eye, vector3d center, vector3d up) {
+    vector3d z = vector3d((eye.x-center.x),(eye.y-center.y),(eye.z-center.z));
+    z.normalize();
+    vector3d x = crossProduct(up,z);
+    x.normalize();
+    vector3d y = crossProduct(z,x);
+    y.normalize();
+    Matrix m = Matrix::identity(4);
+
+    m[0][0] = x.x;
+    m[1][0] = y.x;
+    m[2][0] = z.x;
+
+    m[0][1] = x.y;
+    m[1][1] = y.y;
+    m[2][1] = z.y;
+
+    m[0][2] = x.z;
+    m[1][2] = y.z;
+    m[2][2] = z.z;
+
+    m[0][3] = -center.x;
+    m[1][3] = -center.y;
+    m[2][3] = -center.z;
+
+    return m;
+}
+void render(Model &model){
     double zbuffer[model.image.get_height() * model.image.get_width()];
 
     Matrix proj = Matrix::identity(4);
@@ -65,16 +93,29 @@ void texture( Model &model){
         zbuffer[i] = std::numeric_limits<int>::min();
     }
 
-    for (int i = 0; i < model.nfaces();i++) // access by reference to avoid copying
+    for (int i = 0; i < model.nfaces();i++)
     {
 
-        //on récupère les sommets de la getVerticesFace i
+        //on récupère les sommets de la getVerticesFace i et on fait la projection par rapport à la caméra
         vector3d v0 = model.vertex(model.getVerticesFace(i)[0]);
-        v0 = projection(v0,proj);
+
+
+        Matrix modelView = lookat({10,0,10},{0,0,0},{0.5,1,0});
+        Matrix vM0 = proj * modelView * v2m(v0);
+        v0 = m2v(vM0);
+
+        //v0 = projection(v0,proj);
         vector3d v1 = model.vertex(model.getVerticesFace(i)[1]);
-        v1 = projection(v1,proj);
+        Matrix vM1 = proj * modelView * v2m(v1);
+        v1 = m2v(vM1);
+
+        //v1 = projection(v1,proj);
         vector3d v2 = model.vertex(model.getVerticesFace(i)[2]);
-        v2 = projection(v2,proj);
+        Matrix vM2 = proj * modelView * v2m(v2);
+        v2 = m2v(vM2);
+
+
+        //v2 = projection(v2,proj);
 
         //on récupère les vt du triangle
         vector2d v0Tex = model.getTextureVertices(model.getTextureVerticesFace(i)[0]);
@@ -93,7 +134,7 @@ void texture( Model &model){
 
         vector3d points[3] = {v0_trans, v1_trans, v2_trans};
 
-
+        //on récupère 
         vector3d AB = {v1.x - v0.x,
                        v1.y - v0.y,
                        v1.z - v0.z};
@@ -118,8 +159,6 @@ void texture( Model &model){
 }
 
 vector3d projection( vector3d vec, Matrix m){
-
     return m2v((m * v2m(vec)));
-
 }
 

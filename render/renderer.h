@@ -13,7 +13,7 @@ const static vector3d light = {0,0,1};
 const static vector3d camera = {0,0,3};
 
 void flatShading( Model &model, TGAImage &image);
-void texture( Model &model);
+void render(Model &model);
 vector3d projection( vector3d vec, Matrix m);
 
 #endif //FONCMO3D_RENDERER_H

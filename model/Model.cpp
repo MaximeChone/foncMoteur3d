@@ -9,7 +9,7 @@
 Model::Model(const std::string filename,const std::string textureFileName) {
 
     image = TGAImage(1000,1000,TGAImage::RGB);
-    //texture =  TGAImage(1024,1024,TGAImage::RGB);
+    //render =  TGAImage(1024,1024,TGAImage::RGB);
     texture.read_tga_file(textureFileName);
     texture.flip_vertically();
 
