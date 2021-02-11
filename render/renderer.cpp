@@ -57,17 +57,13 @@ void flatShading(const Model &model, TGAImage &image){
 */
 
 
-void render(Model &model){
-    double zbuffer[model.image.get_height() * model.image.get_width()];
+void render(Model &model,double zbuffer[]){
 
     Matrix proj = Matrix::identity(4);
     proj[3][2] = -1.0/camera.z;
 
     Matrix viewPort = viewport(0,0,model.image.get_width(),model.image.get_height());
 
-    for(int i = 0 ; i < model.image.get_height() * model.image.get_width();i++){
-        zbuffer[i] = std::numeric_limits<int>::min();
-    }
 
     for (int i = 0; i < model.nfaces();i++)
     {

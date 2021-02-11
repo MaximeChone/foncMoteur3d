@@ -23,7 +23,6 @@ private:
     vector<vector2d> textureVertices;
     vector<array<int,3>> facesTextureVertices;
 
-
 public:
     Model(const std::string filename,const std::string textureFileName);
     int nvertices() const;

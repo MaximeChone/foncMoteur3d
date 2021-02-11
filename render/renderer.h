@@ -10,12 +10,12 @@
 #include "draw.h"
 
 const static vector3d light = {0,0,1.25};
-const static vector3d camera = {10,0,-0.75};
+const static vector3d camera = {0,0.40,0.80};
 const static vector3d center = {0,0,0};
 const int depth = 255;
 
 void flatShading( Model &model, TGAImage &image);
-void render(Model &model);
+void render(Model &model,double zbuffer[]);
 vector3d projection( vector3d vec, Matrix m);
 Matrix lookat(vector3d eye, vector3d center, vector3d up);
 Matrix viewport(int x,int y,int w, int h);

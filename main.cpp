@@ -113,11 +113,18 @@ int main(){
     //line(50,50,51,51,image,red);
 
     Model african("obj/african_head/african_head.obj","obj/african_head/african_head_diffuse.tga");
-
+    Model eye("obj/african_head/african_head_eye_inner.obj","obj/african_head/african_head_eye_inner_diffuse.tga");
     //drawV(model,image);
     //flatShading(model,imageFace);
-    render(african);
-    african.image.write_tga_file("african.tga");
+
+    double zbuffer[african.image.get_height() * african.image.get_width()];
+    for(int i = 0 ; i < african.image.get_height() * african.image.get_width();i++){
+        zbuffer[i] = std::numeric_limits<int>::min();
+    }
+    render(african,zbuffer);
+    eye.setImage(african.image);
+    render(eye,zbuffer);
+    eye.image.write_tga_file("african.tga");
 /*
     Model diablo("obj/diablo3_pose/diablo3_pose.obj","obj/diablo3_pose/diablo3_pose_diffuse.tga");
     texture(diablo);
