@@ -56,38 +56,14 @@ void flatShading(const Model &model, TGAImage &image){
 }
 */
 
-Matrix lookat(vector3d eye, vector3d center, vector3d up) {
-    vector3d z = vector3d((eye.x-center.x),(eye.y-center.y),(eye.z-center.z));
-    z.normalize();
-    vector3d x = crossProduct(up,z);
-    x.normalize();
-    vector3d y = crossProduct(z,x);
-    y.normalize();
-    Matrix m = Matrix::identity(4);
 
-    m[0][0] = x.x;
-    m[1][0] = y.x;
-    m[2][0] = z.x;
-
-    m[0][1] = x.y;
-    m[1][1] = y.y;
-    m[2][1] = z.y;
-
-    m[0][2] = x.z;
-    m[1][2] = y.z;
-    m[2][2] = z.z;
-
-    m[0][3] = -center.x;
-    m[1][3] = -center.y;
-    m[2][3] = -center.z;
-
-    return m;
-}
 void render(Model &model){
     double zbuffer[model.image.get_height() * model.image.get_width()];
 
     Matrix proj = Matrix::identity(4);
     proj[3][2] = -1.0/camera.z;
+
+    Matrix viewPort = viewport(0,0,model.image.get_width(),model.image.get_height());
 
     for(int i = 0 ; i < model.image.get_height() * model.image.get_width();i++){
         zbuffer[i] = std::numeric_limits<int>::min();
@@ -100,7 +76,7 @@ void render(Model &model){
         vector3d v0 = model.vertex(model.getVerticesFace(i)[0]);
 
 
-        Matrix modelView = lookat({10,0,10},{0,0,0},{0.5,1,0});
+        Matrix modelView = lookat(camera,center,{0,1,0});
         Matrix vM0 = proj * modelView * v2m(v0);
         v0 = m2v(vM0);
 
@@ -128,9 +104,12 @@ void render(Model &model){
         //cout << i <<" coucou : "<<pointsTex[0].x <<" coucou2:" << pointsTex[0].y  << "\n";
 
         //on transforme les sommets en position de l'écran
-        vector3d v0_trans = {((v0.x + 1) * model.image.get_width() / 2), ((v0.y + 1) * model.image.get_height() / 2),v0.z};
-        vector3d v1_trans = {((v1.x + 1) * model.image.get_width() / 2), ((v1.y + 1) * model.image.get_height() / 2),v1.z};
-        vector3d v2_trans = {((v2.x + 1) * model.image.get_width() / 2), ((v2.y + 1) * model.image.get_height() / 2),v2.z};
+        //vector3d v0_trans = {((v0.x + 1) * model.image.get_width() / 2), ((v0.y + 1) * model.image.get_height() / 2),v0.z};
+        vector3d v0_trans = m2v(viewPort * v2m(v0));
+        //vector3d v1_trans = {((v1.x + 1) * model.image.get_width() / 2), ((v1.y + 1) * model.image.get_height() / 2),v1.z};
+        vector3d v1_trans = m2v(viewPort * v2m(v1));
+        //vector3d v2_trans = {((v2.x + 1) * model.image.get_width() / 2), ((v2.y + 1) * model.image.get_height() / 2),v2.z};
+        vector3d v2_trans = m2v(viewPort * v2m(v2));
 
         vector3d points[3] = {v0_trans, v1_trans, v2_trans};
 
@@ -160,5 +139,48 @@ void render(Model &model){
 
 vector3d projection( vector3d vec, Matrix m){
     return m2v((m * v2m(vec)));
+}
+
+Matrix lookat(vector3d eye, vector3d center, vector3d up) {
+    vector3d z = vector3d((eye.x-center.x),(eye.y-center.y),(eye.z-center.z));
+    z.normalize();
+    vector3d x = crossProduct(up,z);
+    x.normalize();
+    vector3d y = crossProduct(z,x);
+    y.normalize();
+    Matrix m = Matrix::identity(4);
+
+    m[0][0] = x.x;
+    m[1][0] = y.x;
+    m[2][0] = z.x;
+
+    m[0][1] = x.y;
+    m[1][1] = y.y;
+    m[2][1] = z.y;
+
+    m[0][2] = x.z;
+    m[1][2] = y.z;
+    m[2][2] = z.z;
+
+    m[0][3] = -center.x;
+    m[1][3] = -center.y;
+    m[2][3] = -center.z;
+
+    return m;
+}
+
+Matrix viewport(int x,int y,int w, int h){
+    Matrix viewport = Matrix::identity(4);
+
+    viewport[0][3] = x + w/2.0;
+    viewport[1][3] = y + h/2.0;
+    viewport[2][3] =  + depth/2.0;
+
+    viewport[0][0] = w/2.0;
+    viewport[1][1] = h/2.0;
+    viewport[2][2] =  + depth/2.0;
+
+    return viewport;
+
 }
 
