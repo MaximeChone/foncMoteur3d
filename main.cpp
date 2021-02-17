@@ -1,22 +1,18 @@
 #include <iostream> // std::cout
 #include "lib/tgaimage.h"
-#include "render/draw.h"
 #include "model/Model.h"
 #include <iostream>
 #include <fstream>
 #include <list>
 #include <array>
-#include "render/renderer.h"
+#include "render/our_gl.h"
 
 using namespace std;
 
 constexpr int SIZE = 1000;
 constexpr int width  = SIZE;
 constexpr int height = SIZE;
-const TGAColor white = {255, 255, 255, 255};
-const TGAColor red   = {255,   0,   0, 255};
-const TGAColor green = {  0, 255,   0, 255};
-const TGAColor blue  = {  0,   0, 255, 255};
+
 
 vector<array<double,3>> readVFromFile(const string fileName){
     string sline;
@@ -112,8 +108,8 @@ int main(){
 
     //line(50,50,51,51,image,red);
 
-    Model african("obj/african_head/african_head.obj","obj/african_head/african_head_diffuse.tga");
-    Model eye("obj/african_head/african_head_eye_inner.obj","obj/african_head/african_head_eye_inner_diffuse.tga");
+    Model african("obj/african_head/african_head.obj","obj/african_head/african_head_diffuse.tga",1000,1000);
+    Model eye("obj/african_head/african_head_eye_inner.obj","obj/african_head/african_head_eye_inner_diffuse.tga",200,200);
     //drawV(model,image);
     //flatShading(model,imageFace);
 

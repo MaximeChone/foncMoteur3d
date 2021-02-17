@@ -24,7 +24,7 @@ private:
     vector<array<int,3>> facesTextureVertices;
 
 public:
-    Model(const std::string filename,const std::string textureFileName);
+    Model(const std::string filename,const std::string textureFileName,const int w,const int h);
     int nvertices() const;
     void setImage(TGAImage image);
     int nfaces() const;
