@@ -209,7 +209,7 @@ void triangle(vector3d *points, vector2d *pointsTexture,TGAImage &image, TGAImag
     }
 }
 
-void triangle(vector4d *points, IShader &shader, TGAImage &image, TGAImage &zbuffer){
+void triangle(vector4d *points, IShader &shader, TGAImage &image, double zbuffer[]){
 
     vector2d bboxmin(image.get_width()-1, image.get_height()-1);
     vector2d bboxmax(0,0);
@@ -232,26 +232,34 @@ void triangle(vector4d *points, IShader &shader, TGAImage &image, TGAImage &zbuf
             p.x = i;
             p.y = j;
 
-            vector3d points3[3];
+            vector3d points3d[3];
             for(int a = 0; a < 3;a++){
-                points3[a] = v4tov3(points[a]);
+                points3d[a] = v4tov3(points[a]);
             }
 
-            vector3d barycenter = barycentric(points3,p);
 
 
+            vector3d barycenter = barycentric(points3d, p);
+
+            p.z = 0;
+            p.z += points[0].z * barycenter.x;
+            p.z += points[1].z * barycenter.y;
+            p.z += points[2].z * barycenter.z;
+
+            if((barycenter.x < 0 || barycenter.y < 0 || barycenter.z < 0)) continue;
 
             TGAColor color;
 
             bool discard = shader.fragment(barycenter,color);
 
             if(!discard){
-                zbuffer.set(p.x, p.y, TGAColor(p.z));
-                image.set(p.x, p.y, color);
+                if(zbuffer[i + j * image.get_width()] < p.z) {
+                    image.set(p.x, p.y, color);
+                    zbuffer[i + j * image.get_width()] = p.z;
+                }
             }
         }
     }
-
 }
 
 

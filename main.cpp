@@ -13,7 +13,7 @@ constexpr int SIZE = 1000;
 constexpr int width  = SIZE;
 constexpr int height = SIZE;
 
- static vector3d light = {0,0,1};
+ static vector3d light = {1,1,1};
 const static vector3d camera = {1,1,3};
 const static vector3d center = {0,0,0};
 
@@ -144,7 +144,7 @@ void render(Model &model,double zbuffer[]){
     }
 }
 
-void render(Model &model,TGAImage zbuffer){
+void Gouraudrender(Model &model, double *zbuffer){
 
     GouraudShader shader(model);
 
@@ -220,10 +220,13 @@ int main(){
     Model african("obj/african_head/african_head.obj","obj/african_head/african_head_diffuse.tga",width,height);
     Model eye("obj/african_head/african_head_eye_inner.obj","obj/african_head/african_head_eye_inner_diffuse.tga",width,height);
 
-    TGAImage zbuffer(width, height, TGAImage::GRAYSCALE);
+    double zbuffer[african.image.get_height() * african.image.get_width()];
+    for(int i = 0 ; i < african.image.get_height() * african.image.get_width();i++){
+        zbuffer[i] = std::numeric_limits<int>::min();
+    }
 
     light.normalize();
-    render(african,zbuffer);
+    Gouraudrender(african, zbuffer);
 
     african.image.write_tga_file("out.tga");
 

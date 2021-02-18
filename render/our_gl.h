@@ -24,7 +24,7 @@ void triangleOldSchool(vector2i v0, vector2i v1, vector2i v2, TGAImage &image, T
 void triangle(vector3d *points, vector2d *pointsTexture,TGAImage &image, TGAImage &texture,double zbuffer[],float intensity);
 vector3d barycentric(vector3d *points,vector2i p);
 void rasterize(vector2i p0, vector2i p1, TGAImage &image, TGAColor color, int ybuffer[]);
-void triangle(vector4d *pts, IShader &shader, TGAImage &image, TGAImage &zbuffer);
+void triangle(vector4d *pts, IShader &shader, TGAImage &image, double zbuffer[]);
 
 
 #endif //FONCMO3D_OUR_GL_H
