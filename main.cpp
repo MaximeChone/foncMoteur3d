@@ -9,9 +9,8 @@
 
 using namespace std;
 
-constexpr int SIZE = 1000;
-constexpr int width  = SIZE;
-constexpr int height = SIZE;
+int width  = 2000;
+int height = 2000;
 
 static vector3d light = {1,1,1};
 static vector3d camera = {1,1,4};
@@ -92,7 +91,7 @@ struct GouraudShader : public IShader {
     }
 };
 
-void Gouraudrender(Model &model, double *zbuffer){
+void Gouraudrender(Model &model, vector<double> &zbuffer){
 
     GouraudShader shader(model);
 
@@ -104,44 +103,41 @@ void Gouraudrender(Model &model, double *zbuffer){
             screen_coords[j] = shader.vertex(i,j);
         }
 
+        cout << i << endl;
+
         triangle(screen_coords,shader,model.image,zbuffer);
     }
 
 }
 
 int main(){
-
     Model diablo("obj/diablo3_pose/diablo3_pose.obj","obj/diablo3_pose/diablo3_pose_diffuse.tga","obj/diablo3_pose/diablo3_pose_nm.tga",width,height);
     Model boggie("obj/boggie/body.obj","obj/boggie/body_diffuse.tga","obj/boggie/body_nm_tangent.tga",width,height);
     Model boggie_eye("obj/boggie/eyes.obj","obj/boggie/eyes_diffuse.tga","obj/boggie/eyes_nm_tangent.tga",width,height);
     Model boggie_head("obj/boggie/head.obj","obj/boggie/head_diffuse.tga","obj/boggie/head_nm_tangent.tga",width,height);
-
-
     Model african("obj/african_head/african_head.obj","obj/african_head/african_head_diffuse.tga","obj/african_head/african_head_nm.tga",width,height);
-    //Model shrek("obj/shrek/shrek.obj","obj/african_head/african_head_diffuse.tga",width,height);
     Model african_eye("obj/african_head/african_head_eye_inner.obj", "obj/african_head/african_head_eye_inner_diffuse.tga", "obj/african_head/african_head_eye_inner_nm.tga", width, height);
 
-    double zbuffer[height * width];
-    for(int i = 0 ; i < width * height;i++){
-        zbuffer[i] = std::numeric_limits<int>::min();
-    }
+    vector<double> zbuffer(width * height,std::numeric_limits<int>::min());
 
     light.normalize();
     Gouraudrender(african, zbuffer);
     african_eye.setImage(african.image);
+
     Gouraudrender(african_eye, zbuffer);
     //shrek.image.write_tga_file("shrek_out.tga");
+
+
     african_eye.image.write_tga_file("african_out.tga");
 
-    for(int i = 0 ; i < width * height;i++){
-        zbuffer[i] = std::numeric_limits<int>::min();
-    }
+
+    zbuffer = vector<double>(width * height,std::numeric_limits<int>::min());
+
     Gouraudrender(diablo,zbuffer);
     diablo.image.write_tga_file("diablo_out.tga");
 
-    for(int i = 0 ; i < width * height;i++){
-        zbuffer[i] = std::numeric_limits<int>::min();
-    }
+    zbuffer = vector<double>(width * height,std::numeric_limits<int>::min());
+
     Gouraudrender(boggie,zbuffer);
     boggie_eye.image = boggie.image;
     Gouraudrender(boggie_eye,zbuffer);
@@ -150,4 +146,5 @@ int main(){
     boggie_head.image.write_tga_file("boggie_out.tga");
 
     return 0;
+
 }

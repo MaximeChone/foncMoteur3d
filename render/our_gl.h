@@ -19,7 +19,7 @@ struct IShader {
 Matrix lookat(vector3d eye, vector3d center, vector3d up);
 Matrix viewport(int x,int y,int w, int h);
 vector3d barycentric(vector3d *points,vector2i p);
-void triangle(vector4d *pts, IShader &shader, TGAImage &image, double zbuffer[]);
+void triangle(vector4d *pts, IShader &shader, TGAImage &image, vector<double> &zbuffer);
 
 
 #endif //FONCMO3D_OUR_GL_H

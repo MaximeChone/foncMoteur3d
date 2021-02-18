@@ -57,7 +57,7 @@ vector3d barycentric(vector3d *points,vector3d p){
     return {1 - (u.x + u.y)/u.z, u.y/u.z, u.x/u.z};
 }
 
-void triangle(vector4d *points, IShader &shader, TGAImage &image, double zbuffer[]){
+void triangle(vector4d *points, IShader &shader, TGAImage &image, vector<double> &zbuffer){
 
     vector2d bboxmin(image.get_width()-1, image.get_height()-1);
     vector2d bboxmax(0,0);
