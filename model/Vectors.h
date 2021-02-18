@@ -51,6 +51,31 @@ struct vector3d{
     double norm();
 };
 
+struct vector4d{
+    vector4d() {
+
+    }
+    double x;
+    double y;
+    double z;
+    double a;
+    vector4d(double x, double y, double z,double a){
+        this->x = x;
+        this->y = y;
+        this->z = z;
+        this->a = a;
+    }
+
+    vector4d(vector3d vec,double a){
+        this->x = vec.x;
+        this->y = vec.y;
+        this->z = vec.z;
+        this->a = a;
+    }
+    //void normalize();
+    //double norm();
+};
+
 
 double dotProduct(const vector3d &v0, const vector3d &v1);
 vector3d crossProduct(const vector3d &v0, const vector3d &v1);
@@ -80,6 +105,8 @@ public:
 vector3d m2v(Matrix m);
 
 Matrix v2m(vector3d v);
+
+vector3d v4tov3(vector4d v);
 
 
 

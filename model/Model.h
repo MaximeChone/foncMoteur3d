@@ -20,8 +20,11 @@ class Model {
 private:
     vector<vector3d> vertices;
     vector<array<int,3>> facesVertices;
-    vector<vector2d> textureVertices;
-    vector<array<int,3>> facesTextureVertices;
+    vector<vector2d> uvs;
+    vector<array<int,3>> facesUvs;
+    vector<vector3d> vns;
+    vector<array<int,3>> facesVns;
+
 
 public:
     Model(const std::string filename,const std::string textureFileName,const int w,const int h);
@@ -30,8 +33,10 @@ public:
     int nfaces() const;
     vector3d vertex(const int i) const;
     array<int,3> getVerticesFace(const int i) const;
-    vector2d getTextureVertices(const int i) const;
-    array<int,3> getTextureVerticesFace(const int i) const;
+    vector2d getVt(const int i) const;
+    array<int,3> getFaceVt(const int i) const;
+    vector3d getVn(const int i) const;
+    array<int,3> getFaceVn(const int face) const;
     void saveImage(string name);
     TGAImage image;
     TGAImage texture;

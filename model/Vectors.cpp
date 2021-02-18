@@ -130,6 +130,10 @@ Matrix v2m(vector3d v) {
     return m;
 }
 
+vector3d v4tov3(vector4d v){
+    return {v.x,v.y,v.z};
+}
+
 
 
 

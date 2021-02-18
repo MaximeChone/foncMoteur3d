@@ -57,85 +57,7 @@ void flatShading(const Model &model, TGAImage &image){
 */
 
 
-void render(Model &model,double zbuffer[]){
 
-    Matrix proj = Matrix::identity(4);
-    proj[3][2] = -1.0/camera.z;
-
-    Matrix viewPort = viewport(0,0,model.image.get_width(),model.image.get_height());
-    Matrix modelView = lookat(camera,center,{0,1,0});
-
-
-    for (int i = 0; i < model.nfaces();i++)
-    {
-
-        //on récupère les sommets de la getVerticesFace i et on fait la projection par rapport à la caméra
-        vector3d v0 = model.vertex(model.getVerticesFace(i)[0]);
-
-
-        Matrix vM0 = proj * modelView * v2m(v0);
-        v0 = m2v(vM0);
-
-        //v0 = projection(v0,proj);
-        vector3d v1 = model.vertex(model.getVerticesFace(i)[1]);
-        Matrix vM1 = proj * modelView * v2m(v1);
-        v1 = m2v(vM1);
-
-        //v1 = projection(v1,proj);
-        vector3d v2 = model.vertex(model.getVerticesFace(i)[2]);
-        Matrix vM2 = proj * modelView * v2m(v2);
-        v2 = m2v(vM2);
-
-
-        //v2 = projection(v2,proj);
-
-        //on récupère les vt du triangle
-        vector2d v0Tex = model.getTextureVertices(model.getTextureVerticesFace(i)[0]);
-        vector2d v1Tex = model.getTextureVertices(model.getTextureVerticesFace(i)[1]);
-        vector2d v2Tex = model.getTextureVertices(model.getTextureVerticesFace(i)[2]);
-
-        vector2d pointsTex[3] = {v0Tex,v1Tex,v2Tex};
-
-        //cout << i <<" coucou : "<<model.getTextureVerticesFace(i)[0] <<" coucou2:" << model.getTextureVerticesFace(i)[1] << " coucou3:" << model.getTextureVerticesFace(i)[2] << "\n";
-        //cout << i <<" coucou : "<<pointsTex[0].x <<" coucou2:" << pointsTex[0].y  << "\n";
-
-        //on transforme les sommets en position de l'écran
-        //vector3d v0_trans = {((v0.x + 1) * model.image.get_width() / 2), ((v0.y + 1) * model.image.get_height() / 2),v0.z};
-        vector3d v0_trans = m2v(viewPort * v2m(v0));
-        //vector3d v1_trans = {((v1.x + 1) * model.image.get_width() / 2), ((v1.y + 1) * model.image.get_height() / 2),v1.z};
-        vector3d v1_trans = m2v(viewPort * v2m(v1));
-        //vector3d v2_trans = {((v2.x + 1) * model.image.get_width() / 2), ((v2.y + 1) * model.image.get_height() / 2),v2.z};
-        vector3d v2_trans = m2v(viewPort * v2m(v2));
-
-        vector3d points[3] = {v0_trans, v1_trans, v2_trans};
-
-        //on récupère 
-        vector3d AB = {v1.x - v0.x,
-                       v1.y - v0.y,
-                       v1.z - v0.z};
-        vector3d AC = {v2.x - v0.x,
-                       v2.y - v0.y,
-                       v2.z - v0.z};
-
-        //AB.normalize();
-        //AC.normalize();
-
-        vector3d crossProd = crossProduct(AB, AC);
-
-        crossProd.normalize();
-
-        float intensity = dotProduct(light, crossProd);
-
-        if (intensity > 0) {
-            //on dessine le triangle
-            triangle(points, pointsTex,model.image,model.texture,zbuffer,intensity);
-        }
-    }
-}
-
-vector3d projection( vector3d vec, Matrix m){
-    return m2v((m * v2m(vec)));
-}
 
 Matrix lookat(vector3d eye, vector3d center, vector3d up) {
     vector3d z = vector3d((eye.x-center.x),(eye.y-center.y),(eye.z-center.z));
@@ -286,6 +208,52 @@ void triangle(vector3d *points, vector2d *pointsTexture,TGAImage &image, TGAImag
         }
     }
 }
+
+void triangle(vector4d *points, IShader &shader, TGAImage &image, TGAImage &zbuffer){
+
+    vector2d bboxmin(image.get_width()-1, image.get_height()-1);
+    vector2d bboxmax(0,0);
+    vector2d clamp(image.get_width()-1, image.get_height()-1);
+
+    //border min
+    bboxmin.x = max(0.,min(bboxmin.x,min(points[0].x,min(points[1].x,points[2].x))));
+    bboxmin.y = max(0.,min(bboxmin.y,min(points[0].y,min(points[1].y,points[2].y))));
+
+    //border max
+    bboxmax.x = min(clamp.x,max(bboxmax.x,max(points[0].x,max(points[1].x,points[2].x))));
+    bboxmax.y = min(clamp.y,max(bboxmax.y,max(points[0].y,max(points[1].y,points[2].y))));
+
+
+    vector3d p;
+    for(int i=bboxmin.x; i <= bboxmax.x; i++){
+
+        for(int j= bboxmin.y; j <= bboxmax.y; j++){
+
+            p.x = i;
+            p.y = j;
+
+            vector3d points3[3];
+            for(int a = 0; a < 3;a++){
+                points3[a] = v4tov3(points[a]);
+            }
+
+            vector3d barycenter = barycentric(points3,p);
+
+
+
+            TGAColor color;
+
+            bool discard = shader.fragment(barycenter,color);
+
+            if(!discard){
+                zbuffer.set(p.x, p.y, TGAColor(p.z));
+                image.set(p.x, p.y, color);
+            }
+        }
+    }
+
+}
+
 
 void triangleOldSchool(vector2i v0, vector2i v1, vector2i v2, TGAImage &image, TGAColor color) {
     if (v0.y == v1.y && v0.y == v2.y) return;

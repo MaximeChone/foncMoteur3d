@@ -44,7 +44,18 @@ Model::Model(const std::string filename,const std::string textureFileName,const 
                 lineParser >> u;
                 lineParser >> v;
 
-                textureVertices.push_back({u, v});
+                uvs.push_back({u, v});
+            } else if (!(line.compare(0, 3, "vn "))) {
+                double x;
+                double y;
+                double z;
+
+                lineParser >> temp >> temp;
+                lineParser >> x;
+                lineParser >> y;
+                lineParser >> z;
+
+                vns.push_back({x, z,y});
 
             } else if (!line.compare(0, 2, "f ")) {
                 int vt1,vt2,vt3;//à remplacer plus tard pour récupérer l'info
@@ -58,8 +69,9 @@ Model::Model(const std::string filename,const std::string textureFileName,const 
 
                 lineParser >> v3 >> temp >> vt3 >> temp >> vn3;
 
-                facesTextureVertices.push_back({vt1 - 1,vt2 - 1,vt3 -1});
+                facesUvs.push_back({vt1 - 1, vt2 - 1, vt3 - 1});
                 facesVertices.push_back({v1 - 1, v2 - 1, v3 - 1});
+                facesVns.push_back({vn1 - 1,vn2 - 1 ,vn3 - 1});
 
             }
         }
@@ -86,12 +98,20 @@ int Model::nfaces() const {
     return facesVertices.size();
 }
 
-vector2d Model::getTextureVertices(const int i) const {
-    return textureVertices[i];
+vector2d Model::getVt(const int i) const {
+    return uvs[i];
 }
 
-array<int, 3> Model::getTextureVerticesFace(const int i) const {
-    return facesTextureVertices[i];
+vector3d Model::getVn(const int i) const {
+    return vns[i];
+}
+
+array<int, 3> Model::getFaceVn(const int face) const {
+    return facesVns[face];
+}
+
+array<int, 3> Model::getFaceVt(const int i) const {
+    return facesUvs[i];
 }
 
 void Model::setImage(TGAImage image) {
