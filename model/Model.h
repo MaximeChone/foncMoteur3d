@@ -27,7 +27,7 @@ private:
 
 
 public:
-    Model(const std::string filename,const std::string textureFileName,const int w,const int h);
+    Model(const std::string filename,const std::string textureFileName,const std::string normalmappingFileName,const int w,const int h);
     int nvertices() const;
     void setImage(TGAImage image);
     int nfaces() const;
@@ -40,6 +40,7 @@ public:
     void saveImage(string name);
     TGAImage image;
     TGAImage texture;
+    TGAImage normalmapping;
 };
 
 

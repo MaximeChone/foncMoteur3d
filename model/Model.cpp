@@ -6,11 +6,13 @@
 #include "Model.h"
 
 
-Model::Model(const std::string filename,const std::string textureFileName,const int w,const int h) {
+Model::Model(const std::string filename,const std::string textureFileName,const std::string normalmappingFileName,const int w,const int h) {
 
     image = TGAImage(w,h,TGAImage::RGB);
     //render =  TGAImage(1024,1024,TGAImage::RGB);
     texture.read_tga_file(textureFileName);
+    normalmapping.read_tga_file(normalmappingFileName);
+    normalmapping.flip_vertically();
     texture.flip_vertically();
 
     ifstream myfile (filename);
